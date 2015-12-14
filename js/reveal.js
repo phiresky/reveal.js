@@ -147,7 +147,9 @@
 			viewDistance: 3,
 
 			// Script dependencies to load
-			dependencies: []
+			dependencies: [],
+			// wait e.g. for transition to finish before loading embedded
+			loadEmbeddedDelay: 1000,
 
 		},
 
@@ -2205,8 +2207,12 @@
 
 		// Handle embedded content
 		if( slideChanged || !previousSlide ) {
-			stopEmbeddedContent( previousSlide );
-			startEmbeddedContent( currentSlide );
+			(function(prev, cur) {
+				setTimeout(function() {
+					stopEmbeddedContent( prev );
+					startEmbeddedContent( cur );
+				}, config.loadEmbeddedDelay);
+			})(previousSlide, currentSlide);
 		}
 
 		// Announce the current slide contents, for screen readers
